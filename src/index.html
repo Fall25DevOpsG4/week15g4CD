@@ -14,6 +14,67 @@
     </ul>
     <h1>Github Actions</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur accusantium blanditiis non error? Quae neque iure totam commodi accusantium veritatis ipsum exercitationem distinctio, dolorem sequi eum odit quaerat itaque est. Ad, ex illum voluptates eveniet earum, amet rem eligendi molestiae rerum natus aut odio ipsum in cumque deserunt impedit ea adipisci veritatis? Fuga, ipsa. Sunt doloribus placeat tempora optio sapiente ducimus qui perferendis fuga id, non error nihil illo praesentium provident odit deserunt similique modi quas, nostrum delectus quos reiciendis soluta, quibusdam beatae. Libero itaque, fugit totam ipsa adipisci natus iure rem harum sint, numquam obcaecati officiis veniam deserunt voluptates minus amet mollitia maiores ea fuga! Voluptatum numquam, voluptas cum soluta dignissimos praesentium fuga perferendis. Quam a odio ducimus eligendi neque inventore quaerat reiciendis dolor repellendus hic est eveniet atque magnam blanditiis, vero dolore cum fugiat repellat necessitatibus quos numquam dolorem, molestias quas velit? Porro iure, unde cumque, eaque commodi ad quidem numquam cum quas inventore minima sequi. Maiores, laborum vero praesentium perspiciatis magni recusandae laboriosam sapiente totam magnam architecto blanditiis quisquam fuga placeat nam sit autem vel quae iure! Soluta aspernatur quibusdam non placeat doloremque vitae accusantium ducimus corrupti minima. Ducimus animi nobis autem quo nihil sunt dignissimos voluptatem at ipsa voluptatum minus nisi quibusdam facere voluptates consequuntur ab debitis impedit, exercitationem deleniti saepe! Perferendis, deserunt blanditiis! Explicabo cupiditate ipsam eius reiciendis dicta, facilis autem ullam rem sint? Omnis suscipit fugit itaque, dolore veritatis maiores soluta ipsam nulla, ipsa, modi aliquam molestiae impedit laborum consectetur? Incidunt, dolore! A repellat laudantium commodi magni eveniet neque omnis perspiciatis esse veritatis asperiores nam, quaerat illo quo nemo, eum obcaecati possimus iste vero quod tempore. Quaerat incidunt labore id animi maxime doloremque sequi dolorem porro quibusdam, aut, quasi necessitatibus harum nobis. Dolore nostrum repudiandae esse vero odit praesentium beatae pariatur distinctio rerum culpa.</p>
-    
+    <p>TESTING RELEASE BRANCH FOLLOWING VERSION</p>
+    <P>
+        name: ci-stage-wf
+on:
+  pull_request:
+    branches:
+      - release/**
+    types:
+      - opened
+      - synchronize
+jobs:
+  linting-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Switch to release branch
+        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+      - name: Install Dev Dep
+        run: npm install
+      - name: Lint HTML Files
+        run: npx htmlhint "**/*.html"
+      - name: Lint CSS Files
+        run: npx stylelint "**/*.css"
+  app-build-job:
+    runs-on: ubuntu-latest
+    needs: "linting-job"
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Switch to release branch
+        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+      - name: Install Dev Dep
+        run: npm install
+      - name: Build Website With Parcel
+        run: npx parcel build "./src/index.html" --dist-dir "./dist" --public-url "./" --no-cache   
+  image-build-job:
+    needs: "app-build-job"
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Switch to release branch
+        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+      - name: Login To Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Image
+        run: docker image build -t ${{ secrets.DOCKERHUB_USERNAME }}/g4w13:stage-${{ vars.RELEASE_BRANCH_VERSION }} . 
+      - name: List the Images
+        run: docker image ls
+      - name: Push Docker Image on DH
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/g4w13:stage-${{ vars.RELEASE_BRANCH_VERSION }}
+    </P>
 </body>
 </html>

@@ -1,4 +1,4 @@
-name: cd-dev-wf
+name: cd-stage-wf
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ jobs:
     #bind with development environment to apply its rules
     environment: staging-env
     steps:
-      - name: Welcome to Dev-CD Workflow
+      - name: Welcome to Stagging-CD Workflow
         run: echo "Your app is going to be deployed at Render.com"
       - name: Deploy App
         run: curl -X POST ${{secrets.STAGING_ENV_HOOK}}
