@@ -4,7 +4,7 @@ on:
     branches:
       - release/**
 jobs:
-  deploy-dev-job:
+  deploy-stage-job:
     runs-on: ubuntu-latest
     #bind with development environment to apply its rules
     environment: staging-env
