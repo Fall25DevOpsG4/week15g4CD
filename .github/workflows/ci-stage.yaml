@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+        run: git checkout release-${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Login To Dockerhub
         uses: docker/login-action@v3
         with:
