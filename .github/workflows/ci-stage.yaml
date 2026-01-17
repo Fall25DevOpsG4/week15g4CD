@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+        run: git checkout release-${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Install Dev Dep
         run: npm install
       - name: Lint HTML Files
@@ -31,7 +31,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
+        run: git checkout release-${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Install Dev Dep
         run: npm install
       - name: Build Website With Parcel
