@@ -2,7 +2,7 @@ name: ci-stage-wf
 on:
   pull_request:
     branches:
-      - release/**
+      - release**
     types:
       - opened
       - synchronize
@@ -12,10 +12,6 @@ jobs:
     steps:
       - name: Clone Repo
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Install Dev Dep
         run: npm install
       - name: Lint HTML Files
@@ -28,10 +24,6 @@ jobs:
     steps:
       - name: Clone Repo
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Install Dev Dep
         run: npm install
       - name: Build Website With Parcel
@@ -42,10 +34,6 @@ jobs:
     steps:
       - name: clone Repo
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Switch to release branch
-        run: git checkout release/${{ vars.RELEASE_BRANCH_VERSION }}
       - name: Login To Dockerhub
         uses: docker/login-action@v3
         with:
