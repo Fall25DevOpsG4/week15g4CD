@@ -1,0 +1,15 @@
+name: cd-dev-wf
+on:
+  push:
+    branches:
+      - release/**
+jobs:
+  deploy-dev-job:
+    runs-on: ubuntu-latest
+    #bind with development environment to apply its rules
+    environment: staging-env
+    steps:
+      - name: Welcome to Dev-CD Workflow
+        run: echo "Your app is going to be deployed at Render.com"
+      - name: Deploy App
+        run: curl -X POST ${{secrets.STAGING_ENV_HOOK}}
